@@ -1,20 +1,24 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import React from "react";
+import { ScrollView } from "react-native";
+
+import PaymentItem from "../components/PaymentItem";
+import type Payment from "../models/Payment";
+
+const newPayment: Payment = {
+  date: "1/22/2021",
+  name: "armen",
+  description: "food",
+  amount: 15,
+};
+
+const payments: Payment[] = [newPayment, newPayment, newPayment, newPayment];
 
 export default function HomeScreen() {
   return (
-    <View style={styles.container}>
-      <Text>This is the Home Page!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <ScrollView>
+      {payments.map((payment, i) => (
+        <PaymentItem key={`${payment.name}-${i}`} payment={payment} />
+      ))}
+    </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});

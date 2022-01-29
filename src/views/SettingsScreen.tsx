@@ -1,20 +1,36 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
-
-export default function SettingsScreen() {
-  return (
-    <View style={styles.container}>
-      <Text>This is the Settings Page!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+import { StyleSheet, View } from "react-native";
+import { Subheading, Switch, withTheme } from "react-native-paper";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    elevation: 2,
+    padding: 16,
+  },
+  row: {
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "space-between",
+    paddingTop: 16,
+    paddingHorizontal: 16,
+    width: "100%",
   },
 });
+
+type SettingsScreenProps = {
+  theme: ReactNativePaper.Theme;
+};
+
+function SettingsScreen(props: SettingsScreenProps) {
+  const { colors } = props.theme;
+  return (
+    <View style={[styles.container, { backgroundColor: colors.surface }]}>
+      <View style={styles.row}>
+        <Subheading style={{ color: colors.primary }}>Dark Mode</Subheading>
+        <Switch value={true}></Switch>
+      </View>
+    </View>
+  );
+}
+
+export default withTheme(SettingsScreen);
