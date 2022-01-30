@@ -1,5 +1,9 @@
+import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Subheading, Switch, withTheme } from "react-native-paper";
+
+import { toggleDarkMode } from "../app/settingsSlice";
+import { useAppSelector, useAppDispatch } from "../app/hooks";
 
 const styles = StyleSheet.create({
   container: {
@@ -22,12 +26,26 @@ type SettingsScreenProps = {
 };
 
 function SettingsScreen(props: SettingsScreenProps) {
+  const [isDarkModeOn, setIsDarkModeOn] = useState(
+    useAppSelector((state) => state.settings.isDarkModeOn)
+  );
+
   const { colors } = props.theme;
+  const dispatch = useAppDispatch();
+
+  const handleDarkModeSwitch = () => {
+    setIsDarkModeOn(!isDarkModeOn);
+    dispatch(toggleDarkMode());
+  };
+
   return (
     <View style={[styles.container, { backgroundColor: colors.surface }]}>
       <View style={styles.row}>
         <Subheading style={{ color: colors.primary }}>Dark Mode</Subheading>
-        <Switch value={true}></Switch>
+        <Switch
+          value={isDarkModeOn}
+          onValueChange={handleDarkModeSwitch}
+        ></Switch>
       </View>
     </View>
   );
