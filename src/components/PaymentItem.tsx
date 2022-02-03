@@ -1,29 +1,34 @@
-import { StyleSheet, Text, View } from "react-native";
+import React from "react";
+import { StyleSheet, View } from "react-native";
 import Payment from "../models/Payment";
+import { withTheme, Subheading } from "react-native-paper";
 
 type PaymentItemProps = {
+  theme: ReactNativePaper.Theme;
   payment: Payment;
 };
 
-const styles = StyleSheet.create({
-  container: {
-    margin: 5,
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  text: {
-    fontSize: 25,
-  },
-});
+const makeStyles = (colors: ReactNativePaper.ThemeColors) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      elevation: 2,
+      margin: 5,
+      backgroundColor: colors.surface,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+  });
 
-export default function PaymentItem(props: PaymentItemProps) {
+function PaymentItem(props: PaymentItemProps) {
+  const { colors } = props.theme;
   const { name, amount, description, date } = props.payment;
+  const styles = makeStyles(colors);
   return (
     <View style={styles.container}>
-      <Text>{`${name} - $${amount}`}</Text>
-      <Text>{`${description} - ${date}`}</Text>
+      <Subheading>{`${name} owes $${amount}`}</Subheading>
     </View>
   );
 }
+
+export default withTheme(PaymentItem);

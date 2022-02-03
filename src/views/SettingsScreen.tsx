@@ -5,21 +5,26 @@ import { Subheading, Switch, withTheme } from "react-native-paper";
 import { toggleDarkMode } from "../app/settingsSlice";
 import { useAppSelector, useAppDispatch } from "../app/hooks";
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    elevation: 2,
-    padding: 16,
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingTop: 16,
-    paddingHorizontal: 16,
-    width: "100%",
-  },
-});
+const makeStyles = (colors: ReactNativePaper.ThemeColors) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      elevation: 2,
+      padding: 16,
+      backgroundColor: colors.surface,
+    },
+    row: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      paddingTop: 16,
+      paddingHorizontal: 16,
+      width: "100%",
+    },
+    subheading: {
+      color: colors.primary,
+    },
+  });
 
 type SettingsScreenProps = {
   theme: ReactNativePaper.Theme;
@@ -31,6 +36,7 @@ function SettingsScreen(props: SettingsScreenProps) {
   );
 
   const { colors } = props.theme;
+  const styles = makeStyles(colors);
   const dispatch = useAppDispatch();
 
   const handleDarkModeSwitch = () => {
@@ -39,9 +45,9 @@ function SettingsScreen(props: SettingsScreenProps) {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.surface }]}>
+    <View style={styles.container}>
       <View style={styles.row}>
-        <Subheading style={{ color: colors.primary }}>Dark Mode</Subheading>
+        <Subheading style={styles.subheading}>Dark Mode</Subheading>
         <Switch
           value={isDarkModeOn}
           onValueChange={handleDarkModeSwitch}
