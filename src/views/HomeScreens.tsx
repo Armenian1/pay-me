@@ -1,4 +1,5 @@
 import React from "react";
+import { AntDesign } from "@expo/vector-icons";
 import { FlatList, StyleSheet, View } from "react-native";
 import { withTheme } from "react-native-paper";
 
@@ -30,6 +31,14 @@ const makeStyles = (colors: ReactNativePaper.ThemeColors) =>
       padding: 16,
       backgroundColor: colors.surface,
     },
+    addButtonContainer: {
+      flex: 1,
+      alignItems: "flex-end",
+    },
+    addButton: {
+      flex: 1,
+      color: "#28bd37",
+    },
   });
 
 function HomeScreen(props: HomeScreenProps) {
@@ -56,6 +65,14 @@ function HomeScreen(props: HomeScreenProps) {
         keyExtractor={(item) => item.paymentId.toString()}
         ItemSeparatorComponent={renderSeparator}
       />
+      <View style={styles.addButtonContainer}>
+        <AntDesign
+          name="pluscircle"
+          size={30}
+          color="#228f2d"
+          onPress={() => alert("Plus Pressed!")}
+        />
+      </View>
     </View>
   );
 }
