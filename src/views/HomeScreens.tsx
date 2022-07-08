@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { AntDesign } from "@expo/vector-icons";
 import { FlatList, StyleSheet, View } from "react-native";
 import { withTheme } from "react-native-paper";
+import config from "../config.js";
 
 import PaymentItem from "../components/PaymentItem";
 import type Payment from "../models/Payment";
@@ -44,6 +45,10 @@ const makeStyles = (colors: ReactNativePaper.ThemeColors) =>
 function HomeScreen(props: HomeScreenProps) {
   const { colors } = props.theme;
   const styles = makeStyles(colors);
+
+  useEffect(() => {
+    console.log(config.FIREBASE_API_KEY);
+  }, []);
 
   const renderSeparator = () => {
     return (
