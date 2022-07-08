@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 import { AntDesign } from "@expo/vector-icons";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "../database/firebase";
 import { FlatList, StyleSheet, View } from "react-native";
 import { withTheme } from "react-native-paper";
-import config from "../config.js";
 
 import PaymentItem from "../components/PaymentItem";
 import type Payment from "../models/Payment";
@@ -16,7 +17,7 @@ const p1: Payment = {
 };
 
 const payments: Payment[] = [];
-for (let i = 0; i < 10; i++) {
+for (let i = 0; i < 5; i++) {
   payments.push({ ...p1, paymentId: i });
 }
 
@@ -46,10 +47,6 @@ function HomeScreen(props: HomeScreenProps) {
   const { colors } = props.theme;
   const styles = makeStyles(colors);
 
-  useEffect(() => {
-    console.log(config.FIREBASE_API_KEY);
-  }, []);
-
   const renderSeparator = () => {
     return (
       <View
@@ -60,6 +57,21 @@ function HomeScreen(props: HomeScreenProps) {
         }}
       />
     );
+  };
+
+  const handleAddPayment = async () => {
+    try {
+      const docRef = await addDoc(collection(db, "payments"), {
+        name: "Stan Fredericks",
+        amount: 5,
+        message: "Ice Cream",
+        notes: "Said he would pay me back",
+        date: new Date(),
+      });
+      console.log("Document written with ID: ", docRef.id);
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
   };
 
   return (
@@ -75,7 +87,7 @@ function HomeScreen(props: HomeScreenProps) {
           name="pluscircle"
           size={30}
           color="#228f2d"
-          onPress={() => alert("Plus Pressed!")}
+          onPress={() => handleAddPayment()}
         />
       </View>
     </View>
