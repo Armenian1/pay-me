@@ -20,7 +20,7 @@ const makeStyles = (colors: ReactNativePaper.ThemeColors) =>
     },
   });
 
-function PaymentItem(props: PaymentItemProps) {
+function PaymentItem(props: PaymentItemProps): JSX.Element {
   const { colors } = props.theme;
   const { name, amount, description, date } = props.payment;
   const styles = makeStyles(colors);

@@ -1,7 +1,9 @@
+/* Represents a payment item */
 export default interface Payment {
   paymentId: number;
-  date: string;
   name: string;
-  description: string;
   amount: number;
+  description: string;
+  notes: string;
+  date: string;
 }

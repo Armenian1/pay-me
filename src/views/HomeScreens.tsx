@@ -1,10 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { AntDesign } from "@expo/vector-icons";
-import { collection, addDoc } from "firebase/firestore";
-import { db } from "../database/firebase";
 import { FlatList, StyleSheet, View } from "react-native";
 import { withTheme } from "react-native-paper";
 
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "../database/firebase";
+
+import AddPaymentForm from "./AddPaymentForm";
 import PaymentItem from "../components/PaymentItem";
 import type Payment from "../models/Payment";
 
@@ -14,6 +16,7 @@ const p1: Payment = {
   name: "armen",
   description: "food",
   amount: 15,
+  notes: "nothing",
 };
 
 const payments: Payment[] = [];
@@ -43,9 +46,12 @@ const makeStyles = (colors: ReactNativePaper.ThemeColors) =>
     },
   });
 
-function HomeScreen(props: HomeScreenProps) {
+function HomeScreen(props: HomeScreenProps): JSX.Element {
   const { colors } = props.theme;
   const styles = makeStyles(colors);
+
+  const [isAddPaymentVisible, setIsAddPaymentVisible] =
+    useState<boolean>(false);
 
   const renderSeparator = () => {
     return (
@@ -59,14 +65,14 @@ function HomeScreen(props: HomeScreenProps) {
     );
   };
 
-  const handleAddPayment = async () => {
+  const addPayment = async (payment: Payment) => {
     try {
       const docRef = await addDoc(collection(db, "payments"), {
-        name: "Stan Fredericks",
-        amount: 5,
-        message: "Ice Cream",
-        notes: "Said he would pay me back",
-        date: new Date(),
+        name: payment.name,
+        amount: payment.amount,
+        description: payment.description,
+        notes: payment.notes,
+        date: payment.date,
       });
       console.log("Document written with ID: ", docRef.id);
     } catch (e) {
@@ -87,9 +93,14 @@ function HomeScreen(props: HomeScreenProps) {
           name="pluscircle"
           size={30}
           color="#228f2d"
-          onPress={() => handleAddPayment()}
+          onPress={() => setIsAddPaymentVisible(true)}
         />
       </View>
+      <AddPaymentForm
+        isVisible={isAddPaymentVisible}
+        setIsVisible={(value: boolean) => setIsAddPaymentVisible(value)}
+        addPayment={addPayment}
+      />
     </View>
   );
 }
