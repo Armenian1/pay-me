@@ -1,28 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { AntDesign } from "@expo/vector-icons";
 import { FlatList, StyleSheet, View } from "react-native";
 import { withTheme } from "react-native-paper";
 
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, getDocs } from "firebase/firestore";
 import { db } from "../database/firebase";
 
 import AddPaymentForm from "./AddPaymentForm";
 import PaymentItem from "../components/PaymentItem";
 import type Payment from "../models/Payment";
-
-const p1: Payment = {
-  paymentId: 1,
-  date: "1/22/2021",
-  name: "armen",
-  description: "food",
-  amount: 15,
-  notes: "nothing",
-};
-
-const payments: Payment[] = [];
-for (let i = 0; i < 5; i++) {
-  payments.push({ ...p1, paymentId: i });
-}
 
 type HomeScreenProps = {
   theme: ReactNativePaper.Theme;
@@ -52,17 +38,25 @@ function HomeScreen(props: HomeScreenProps): JSX.Element {
 
   const [isAddPaymentVisible, setIsAddPaymentVisible] =
     useState<boolean>(false);
+  const [payments, setPayments] = useState<Payment[]>([]);
 
-  const renderSeparator = () => {
-    return (
-      <View
-        style={{
-          flex: 1,
-          height: 1,
-          backgroundColor: colors.accent,
-        }}
-      />
-    );
+  useEffect(() => {
+    getPayments();
+  }, []);
+
+  const getPayments = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "payments"));
+
+      const firestorePayments: Payment[] = [];
+      querySnapshot.forEach((doc) => {
+        firestorePayments.push(doc.data() as Payment);
+      });
+
+      setPayments(firestorePayments);
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
   };
 
   const addPayment = async (payment: Payment) => {
@@ -78,6 +72,19 @@ function HomeScreen(props: HomeScreenProps): JSX.Element {
     } catch (e) {
       console.error("Error adding document: ", e);
     }
+    setPayments([...payments, payment]);
+  };
+
+  const renderSeparator = () => {
+    return (
+      <View
+        style={{
+          flex: 1,
+          height: 1,
+          backgroundColor: colors.accent,
+        }}
+      />
+    );
   };
 
   return (
@@ -85,7 +92,7 @@ function HomeScreen(props: HomeScreenProps): JSX.Element {
       <FlatList
         data={payments}
         renderItem={({ item }) => <PaymentItem payment={item} />}
-        keyExtractor={(item) => item.paymentId.toString()}
+        keyExtractor={(item, i) => `item.name-${i}`} // replace with ID
         ItemSeparatorComponent={renderSeparator}
       />
       <View style={styles.addButtonContainer}>

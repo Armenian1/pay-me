@@ -30,7 +30,8 @@ function AddPaymentForm(props: AddPaymentFormProps): JSX.Element {
 
   const handleAddPaymentClick = () => {
     const newPayment: Payment = {
-      paymentId: 34, // Need to make this ID unique.
+      // For some reason ID is not being saved.
+      //paymentId: 34, // Need to make this ID unique.
       name: name,
       amount: Number(amount),
       description: description,
@@ -40,6 +41,12 @@ function AddPaymentForm(props: AddPaymentFormProps): JSX.Element {
 
     props.addPayment(newPayment);
     props.setIsVisible(false);
+
+    // Perhaps it will be better to destroy the component rather than resetting its values here.
+    setName("");
+    setAmount("");
+    setDescription("");
+    setNotes("");
   };
 
   return (
