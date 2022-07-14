@@ -1,5 +1,5 @@
-import { FIREBASE_API_KEY } from "@env";
+import { FIREBASE_API_KEY } from '@env';
 
 export default {
-  FIREBASE_API_KEY,
+   FIREBASE_API_KEY,
 };
