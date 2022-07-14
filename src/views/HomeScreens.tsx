@@ -9,6 +9,11 @@ import { db } from "../database/firebase";
 import AddPaymentForm from "./AddPaymentForm";
 import PaymentItem from "../components/PaymentItem";
 import type Payment from "../models/Payment";
+import type {
+  DocumentData,
+  DocumentReference,
+  QuerySnapshot,
+} from "firebase/firestore";
 
 type HomeScreenProps = {
   theme: ReactNativePaper.Theme;
@@ -30,6 +35,11 @@ const makeStyles = (colors: ReactNativePaper.ThemeColors) =>
       flex: 1,
       color: "#28bd37",
     },
+    addPaymentFormContainer: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+    },
   });
 
 function HomeScreen(props: HomeScreenProps): JSX.Element {
@@ -46,33 +56,39 @@ function HomeScreen(props: HomeScreenProps): JSX.Element {
 
   const getPayments = async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, "payments"));
+      const querySnapshot: QuerySnapshot<DocumentData> = await getDocs(
+        collection(db, "payments")
+      );
 
-      const firestorePayments: Payment[] = [];
-      querySnapshot.forEach((doc) => {
-        firestorePayments.push(doc.data() as Payment);
-      });
-
-      setPayments(firestorePayments);
+      setPayments(
+        querySnapshot.docs.map(
+          (doc) => ({ ...doc.data(), id: doc.id } as Payment)
+        )
+      );
     } catch (e) {
       console.error("Error adding document: ", e);
     }
   };
 
-  const addPayment = async (payment: Payment) => {
+  const addPayment = async (payment: Partial<Payment>) => {
     try {
-      const docRef = await addDoc(collection(db, "payments"), {
-        name: payment.name,
-        amount: payment.amount,
-        description: payment.description,
-        notes: payment.notes,
-        date: payment.date,
-      });
+      const docRef: DocumentReference<DocumentData> = await addDoc(
+        collection(db, "payments"),
+        {
+          name: payment.name,
+          amount: payment.amount,
+          description: payment.description,
+          notes: payment.notes,
+          date: payment.date,
+        }
+      );
       console.log("Document written with ID: ", docRef.id);
+
+      const newPayment: Payment = { ...payment, id: docRef.id } as Payment;
+      setPayments([...payments, newPayment]);
     } catch (e) {
       console.error("Error adding document: ", e);
     }
-    setPayments([...payments, payment]);
   };
 
   const renderSeparator = () => {
@@ -92,7 +108,7 @@ function HomeScreen(props: HomeScreenProps): JSX.Element {
       <FlatList
         data={payments}
         renderItem={({ item }) => <PaymentItem payment={item} />}
-        keyExtractor={(item, i) => `item.name-${i}`} // replace with ID
+        keyExtractor={(item) => item.id}
         ItemSeparatorComponent={renderSeparator}
       />
       <View style={styles.addButtonContainer}>
@@ -103,11 +119,13 @@ function HomeScreen(props: HomeScreenProps): JSX.Element {
           onPress={() => setIsAddPaymentVisible(true)}
         />
       </View>
-      <AddPaymentForm
-        isVisible={isAddPaymentVisible}
-        setIsVisible={(value: boolean) => setIsAddPaymentVisible(value)}
-        addPayment={addPayment}
-      />
+      <View style={styles.addPaymentFormContainer}>
+        <AddPaymentForm
+          isVisible={isAddPaymentVisible}
+          setIsVisible={(value: boolean) => setIsAddPaymentVisible(value)}
+          addPayment={addPayment}
+        />
+      </View>
     </View>
   );
 }
