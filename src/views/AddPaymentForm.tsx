@@ -17,6 +17,10 @@ const makeStyles = (theme: ReactNativePaper.Theme) =>
       inputFieldContainer: {
          margin: 5,
       },
+      optionalInputFieldLabelContainer: {
+         flexDirection: 'row',
+         justifyContent: 'space-between',
+      },
       inputField: {
          backgroundColor: '#FFFFFF',
       },
@@ -36,6 +40,7 @@ function AddPaymentForm(props: AddPaymentFormProps): JSX.Element {
    const [amount, setAmount] = useState<string>('');
    const [description, setDescription] = useState<string>('');
    const [notes, setNotes] = useState<string>('');
+   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
 
    const isModalVisible: boolean = props.isVisible;
 
@@ -44,9 +49,11 @@ function AddPaymentForm(props: AddPaymentFormProps): JSX.Element {
       setAmount('');
       setDescription('');
       setNotes('');
+      setIsButtonDisabled(false);
    };
 
    const handleAddPaymentClick = () => {
+      setIsButtonDisabled(true);
       const newPayment: Partial<Payment> = {
          name: name,
          amount: Number(amount),
@@ -84,6 +91,7 @@ function AddPaymentForm(props: AddPaymentFormProps): JSX.Element {
                      dense
                      value={amount}
                      onChangeText={(text) => setAmount(text)}
+                     keyboardType="numeric"
                   />
                </View>
                <View style={styles.inputFieldContainer}>
@@ -97,14 +105,19 @@ function AddPaymentForm(props: AddPaymentFormProps): JSX.Element {
                   />
                </View>
                <View style={styles.inputFieldContainer}>
-                  <Text>Notes</Text>
-                  <TextInput
-                     mode="outlined"
-                     style={styles.inputField}
-                     dense
-                     value={notes}
-                     onChangeText={(text) => setNotes(text)}
-                  />
+                  <View style={styles.optionalInputFieldLabelContainer}>
+                     <Text>Notes</Text>
+                     <Text>(Optional)</Text>
+                  </View>
+                  <View>
+                     <TextInput
+                        mode="outlined"
+                        style={styles.inputField}
+                        dense
+                        value={notes}
+                        onChangeText={(text) => setNotes(text)}
+                     />
+                  </View>
                </View>
             </Modal.Body>
             <Modal.Footer>
@@ -113,6 +126,7 @@ function AddPaymentForm(props: AddPaymentFormProps): JSX.Element {
                   style={styles.addPaymentButton}
                   labelStyle={styles.addPaymentButtonText}
                   color="green"
+                  disabled={isButtonDisabled}
                   onPress={() => handleAddPaymentClick()}
                   uppercase={false}
                   accessibilityLabel="Add a Payment"
