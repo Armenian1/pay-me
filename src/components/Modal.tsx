@@ -10,7 +10,7 @@ type ModalProps = {
 
 const styles = StyleSheet.create({
    container: {
-      backgroundColor: '#ffffff',
+      backgroundColor: '#f5f5f5',
       borderRadius: 25,
       borderWidth: 1,
       borderColor: '#000',
