@@ -71,7 +71,7 @@ function AddPaymentForm(props: AddPaymentFormProps): JSX.Element {
    return (
       <Modal isVisible={isModalVisible} onBackdropPress={() => props.setIsVisible(false)}>
          <Modal.Container>
-            <Modal.Header title="Add a new payment." />
+            <Modal.Header title="Add a New Payment" />
             <Modal.Body>
                <View style={styles.inputFieldContainer}>
                   <Text>Name</Text>
