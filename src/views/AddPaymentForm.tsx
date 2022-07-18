@@ -89,8 +89,8 @@ function AddPaymentForm(props: AddPaymentFormProps): JSX.Element {
                      mode="outlined"
                      style={styles.inputField}
                      dense
-                     value={amount}
-                     onChangeText={(text) => setAmount(text)}
+                     value={`$ ${amount}`}
+                     onChangeText={(text) => setAmount(text.slice(1))}
                      keyboardType="numeric"
                   />
                </View>
