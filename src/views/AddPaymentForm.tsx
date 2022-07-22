@@ -20,6 +20,9 @@ type FormData = {
    notes: string;
 };
 
+const currencyRegExp: RegExp =
+   /^\$?([1-9]{1}[0-9]{0,2}(\,[0-9]{3})*(\.[0-9]{0,2})?|[1-9]{1}[0-9]{0,}(\.[0-9]{0,2})?|0(\.[0-9]{0,2})?|(\.[0-9]{1,2})?)$/;
+
 const makeStyles = (theme: ReactNativePaper.Theme) =>
    StyleSheet.create({
       inputFieldContainer: {
@@ -106,7 +109,10 @@ function AddPaymentForm(props: AddPaymentFormProps): JSX.Element {
                   <Text>Amount</Text>
                   <Controller
                      control={control}
-                     rules={{ required: true }}
+                     rules={{
+                        required: true,
+                        pattern: currencyRegExp,
+                     }}
                      render={({ field: { onChange, onBlur, value } }) => (
                         <TextInput
                            mode="outlined"
@@ -120,7 +126,12 @@ function AddPaymentForm(props: AddPaymentFormProps): JSX.Element {
                      )}
                      name="amount"
                   />
-                  {errors.amount && <Text style={styles.errorText}>This is required.</Text>}
+                  {errors.amount && errors.amount.type === 'required' && (
+                     <Text style={styles.errorText}>This is required.</Text>
+                  )}
+                  {errors.amount && errors.amount.type === 'pattern' && (
+                     <Text style={styles.errorText}>Must be a valid dollar amount.</Text>
+                  )}
                </View>
                <View style={styles.inputFieldContainer}>
                   <Text>Description</Text>
