@@ -3,7 +3,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { withTheme } from 'react-native-paper';
 
-import { addDoc, collection, getDocs } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, getDocs } from 'firebase/firestore';
 import { db } from '../database/firebase';
 
 import AddPaymentForm from './AddPaymentForm';
@@ -79,6 +79,20 @@ function HomeScreen(props: HomeScreenProps): JSX.Element {
       }
    };
 
+   const deletePayment = async (payment: Payment) => {
+      try {
+         await deleteDoc(doc(db, 'payments', payment.id));
+         console.log(`Payment ${payment.name} has successfully been deleted`);
+
+         const paymentIndex: number = payments.map((x) => x.id).indexOf(payment.id);
+         if (paymentIndex > -1) {
+            setPayments([...payments.slice(0, paymentIndex), ...payments.slice(paymentIndex + 1)]);
+         }
+      } catch (e) {
+         console.error('Error deleting document: ', e);
+      }
+   };
+
    const renderSeparator = () => {
       return (
          <View
@@ -95,7 +109,7 @@ function HomeScreen(props: HomeScreenProps): JSX.Element {
       <View style={styles.container}>
          <FlatList
             data={payments}
-            renderItem={({ item }) => <PaymentItem payment={item} />}
+            renderItem={({ item }) => <PaymentItem payment={item} deletePayment={deletePayment} />}
             keyExtractor={(item) => item.id}
             ItemSeparatorComponent={renderSeparator}
          />
