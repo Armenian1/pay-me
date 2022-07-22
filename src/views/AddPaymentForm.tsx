@@ -68,10 +68,10 @@ function AddPaymentForm(props: AddPaymentFormProps): JSX.Element {
 
    const addPayment = (data: FormData) => {
       const newPayment: Partial<Payment> = {
-         name: data.name,
+         name: data.name.trim(),
          amount: Number(data.amount),
-         description: data.description,
-         notes: data.notes,
+         description: data.description.trim(),
+         notes: data.notes.trim(),
          date: new Date().toLocaleDateString(),
       };
 
