@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, Text, TextInput, withTheme } from 'react-native-paper';
+import { Controller, useForm } from 'react-hook-form';
 
 import Modal from '../components/Modal';
 import Payment from '../models/Payment';
@@ -10,6 +11,13 @@ type AddPaymentFormProps = {
    isVisible: boolean;
    setIsVisible: (value: boolean) => void;
    addPayment: (payment: Partial<Payment>) => Promise<void>;
+};
+
+type FormData = {
+   name: string;
+   amount: string;
+   description: string;
+   notes: string;
 };
 
 const makeStyles = (theme: ReactNativePaper.Theme) =>
@@ -31,41 +39,43 @@ const makeStyles = (theme: ReactNativePaper.Theme) =>
       addPaymentButtonText: {
          fontSize: 18,
       },
+      errorText: {
+         color: 'red',
+      },
    });
 
 function AddPaymentForm(props: AddPaymentFormProps): JSX.Element {
    const styles = makeStyles(props.theme);
-
-   const [name, setName] = useState<string>('');
-   const [amount, setAmount] = useState<string>('');
-   const [description, setDescription] = useState<string>('');
-   const [notes, setNotes] = useState<string>('');
-   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
-
    const isModalVisible: boolean = props.isVisible;
 
-   const resetForm = () => {
-      setName('');
-      setAmount('');
-      setDescription('');
-      setNotes('');
-      setIsButtonDisabled(false);
-   };
+   const {
+      control,
+      handleSubmit,
+      reset,
+      formState: { errors, isValid },
+   } = useForm<FormData>({
+      defaultValues: {
+         name: '',
+         amount: '',
+         description: '',
+         notes: '',
+      },
+      mode: 'onChange',
+   });
 
-   const handleAddPaymentClick = () => {
-      setIsButtonDisabled(true);
+   const addPayment = (data: FormData) => {
       const newPayment: Partial<Payment> = {
-         name: name,
-         amount: Number(amount),
-         description: description,
-         notes: notes,
+         name: data.name,
+         amount: Number(data.amount),
+         description: data.description,
+         notes: data.notes,
          date: new Date().toLocaleDateString(),
       };
 
       props.addPayment(newPayment);
       props.setIsVisible(false);
 
-      resetForm();
+      reset(undefined, { keepDefaultValues: true });
    };
 
    return (
@@ -75,49 +85,81 @@ function AddPaymentForm(props: AddPaymentFormProps): JSX.Element {
             <Modal.Body>
                <View style={styles.inputFieldContainer}>
                   <Text>Name</Text>
-                  <TextInput
-                     mode="outlined"
-                     style={styles.inputField}
-                     dense
-                     value={name}
-                     onChangeText={(text) => setName(text)}
+                  <Controller
+                     control={control}
+                     rules={{ required: true }}
+                     render={({ field: { onChange, onBlur, value } }) => (
+                        <TextInput
+                           mode="outlined"
+                           style={styles.inputField}
+                           onBlur={onBlur}
+                           onChangeText={onChange}
+                           value={value}
+                           dense
+                        />
+                     )}
+                     name="name"
                   />
+                  {errors.name && <Text style={styles.errorText}>This is required.</Text>}
                </View>
                <View style={styles.inputFieldContainer}>
                   <Text>Amount</Text>
-                  <TextInput
-                     mode="outlined"
-                     style={styles.inputField}
-                     dense
-                     value={`$ ${amount}`}
-                     onChangeText={(text) => setAmount(text.slice(1))}
-                     keyboardType="numeric"
+                  <Controller
+                     control={control}
+                     rules={{ required: true }}
+                     render={({ field: { onChange, onBlur, value } }) => (
+                        <TextInput
+                           mode="outlined"
+                           style={styles.inputField}
+                           onBlur={onBlur}
+                           onChangeText={(text) => onChange(text.slice(1).trim())}
+                           value={`$ ${value}`}
+                           keyboardType="numeric"
+                           dense
+                        />
+                     )}
+                     name="amount"
                   />
+                  {errors.amount && <Text style={styles.errorText}>This is required.</Text>}
                </View>
                <View style={styles.inputFieldContainer}>
                   <Text>Description</Text>
-                  <TextInput
-                     mode="outlined"
-                     style={styles.inputField}
-                     dense
-                     value={description}
-                     onChangeText={(text) => setDescription(text)}
+                  <Controller
+                     control={control}
+                     rules={{ required: true }}
+                     render={({ field: { onChange, onBlur, value } }) => (
+                        <TextInput
+                           mode="outlined"
+                           style={styles.inputField}
+                           onBlur={onBlur}
+                           onChangeText={onChange}
+                           value={value}
+                           dense
+                        />
+                     )}
+                     name="description"
                   />
+                  {errors.description && <Text style={styles.errorText}>This is required.</Text>}
                </View>
                <View style={styles.inputFieldContainer}>
                   <View style={styles.optionalInputFieldLabelContainer}>
                      <Text>Notes</Text>
                      <Text>(Optional)</Text>
                   </View>
-                  <View>
-                     <TextInput
-                        mode="outlined"
-                        style={styles.inputField}
-                        dense
-                        value={notes}
-                        onChangeText={(text) => setNotes(text)}
-                     />
-                  </View>
+                  <Controller
+                     control={control}
+                     render={({ field: { onChange, onBlur, value } }) => (
+                        <TextInput
+                           mode="outlined"
+                           style={styles.inputField}
+                           onBlur={onBlur}
+                           onChangeText={onChange}
+                           value={value}
+                           dense
+                        />
+                     )}
+                     name="notes"
+                  />
                </View>
             </Modal.Body>
             <Modal.Footer>
@@ -126,8 +168,8 @@ function AddPaymentForm(props: AddPaymentFormProps): JSX.Element {
                   style={styles.addPaymentButton}
                   labelStyle={styles.addPaymentButtonText}
                   color="green"
-                  disabled={isButtonDisabled}
-                  onPress={() => handleAddPaymentClick()}
+                  disabled={!isValid}
+                  onPress={handleSubmit(addPayment)}
                   uppercase={false}
                   accessibilityLabel="Add a Payment"
                >
