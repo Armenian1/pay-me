@@ -72,7 +72,7 @@ function AddPaymentForm(props: AddPaymentFormProps): JSX.Element {
          amount: Number(data.amount),
          description: data.description.trim(),
          notes: data.notes.trim(),
-         date: new Date().toLocaleDateString(),
+         date: new Date().toISOString(),
       };
 
       props.addPayment(newPayment);

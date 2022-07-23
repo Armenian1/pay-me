@@ -24,8 +24,9 @@ const makeStyles = (colors: ReactNativePaper.ThemeColors) =>
          backgroundColor: colors.surface,
       },
       addButtonContainer: {
-         flex: 1,
-         alignItems: 'flex-end',
+         position: 'absolute',
+         bottom: 10,
+         right: 10,
       },
       addButton: {
          flex: 1,
@@ -107,12 +108,16 @@ function HomeScreen(props: HomeScreenProps): JSX.Element {
 
    return (
       <View style={styles.container}>
-         <FlatList
-            data={payments}
-            renderItem={({ item }) => <PaymentItem payment={item} deletePayment={deletePayment} />}
-            keyExtractor={(item) => item.id}
-            ItemSeparatorComponent={renderSeparator}
-         />
+         <View>
+            <FlatList
+               data={payments}
+               renderItem={({ item }) => (
+                  <PaymentItem payment={item} deletePayment={deletePayment} />
+               )}
+               keyExtractor={(item) => item.id}
+               ItemSeparatorComponent={renderSeparator}
+            />
+         </View>
          <View style={styles.addButtonContainer}>
             <AntDesign
                name="pluscircle"
