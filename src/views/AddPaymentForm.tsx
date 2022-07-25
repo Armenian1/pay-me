@@ -17,7 +17,7 @@ type FormData = {
    name: string;
    amount: string;
    description: string;
-   notes: string;
+   comments: string;
 };
 
 const currencyRegExp: RegExp =
@@ -61,7 +61,7 @@ function AddPaymentForm(props: AddPaymentFormProps): JSX.Element {
          name: '',
          amount: '',
          description: '',
-         notes: '',
+         comments: '',
       },
       mode: 'onChange',
    });
@@ -71,7 +71,7 @@ function AddPaymentForm(props: AddPaymentFormProps): JSX.Element {
          name: data.name.trim(),
          amount: Number(data.amount),
          description: data.description.trim(),
-         notes: data.notes.trim(),
+         comments: data.comments.trim(),
          date: new Date().toISOString(),
       };
 
@@ -154,7 +154,7 @@ function AddPaymentForm(props: AddPaymentFormProps): JSX.Element {
                </View>
                <View style={styles.inputFieldContainer}>
                   <View style={styles.optionalInputFieldLabelContainer}>
-                     <Text>Notes</Text>
+                     <Text>Comments</Text>
                      <Text>(Optional)</Text>
                   </View>
                   <Controller
@@ -169,7 +169,7 @@ function AddPaymentForm(props: AddPaymentFormProps): JSX.Element {
                            dense
                         />
                      )}
-                     name="notes"
+                     name="comments"
                   />
                </View>
             </Modal.Body>

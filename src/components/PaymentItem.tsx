@@ -67,9 +67,9 @@ const makeStyles = (theme: ReactNativePaper.Theme) =>
 
 function PaymentItem(props: PaymentItemProps): JSX.Element {
    const styles = makeStyles(props.theme);
-   const { name, amount, description, notes, date } = props.payment;
+   const { name, amount, description, comments, date } = props.payment;
 
-   const [isNotesVisible, setIsNotesVisible] = useState<boolean>(false);
+   const [isCommentsVisible, setIsCommentsVisible] = useState<boolean>(false);
 
    return (
       <View style={styles.container}>
@@ -98,9 +98,9 @@ function PaymentItem(props: PaymentItemProps): JSX.Element {
             <View style={styles.paymentDescriptionContainer}>
                <Text style={styles.paymentDescription}>{description}</Text>
             </View>
-            {isNotesVisible && notes !== '' && (
+            {isCommentsVisible && comments !== '' && (
                <View>
-                  <Text style={styles.paymentDescription}>{notes}</Text>
+                  <Text style={styles.paymentDescription}>{comments}</Text>
                </View>
             )}
          </View>
@@ -110,7 +110,7 @@ function PaymentItem(props: PaymentItemProps): JSX.Element {
                   name="commenting-o"
                   size={24}
                   color={props.theme.colors.onSurface}
-                  onPress={() => setIsNotesVisible(!isNotesVisible)}
+                  onPress={() => setIsCommentsVisible(!isCommentsVisible)}
                />
             </View>
             <View>

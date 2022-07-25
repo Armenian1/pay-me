@@ -68,7 +68,7 @@ function HomeScreen(props: HomeScreenProps): JSX.Element {
             name: payment.name,
             amount: payment.amount,
             description: payment.description,
-            notes: payment.notes,
+            comments: payment.comments,
             date: payment.date,
          });
          console.log('Document written with ID: ', docRef.id);
