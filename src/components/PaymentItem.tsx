@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import moment from 'moment';
 import { FontAwesome } from '@expo/vector-icons';
 import { StyleSheet, TouchableHighlight, View } from 'react-native';
@@ -58,13 +58,19 @@ const makeStyles = (theme: ReactNativePaper.Theme) =>
       },
       paymentIconsContainer: {
          flex: 1,
-         justifyContent: 'center',
+         flexDirection: 'row',
+         justifyContent: 'space-around',
+         alignItems: 'flex-end',
+         marginBottom: 5,
       },
    });
 
 function PaymentItem(props: PaymentItemProps): JSX.Element {
    const styles = makeStyles(props.theme);
-   const { name, amount, description, date } = props.payment;
+   const { name, amount, description, notes, date } = props.payment;
+
+   const [isNotesVisible, setIsNotesVisible] = useState<boolean>(false);
+
    return (
       <View style={styles.container}>
          <View style={styles.profileIconContainer}>
@@ -92,14 +98,29 @@ function PaymentItem(props: PaymentItemProps): JSX.Element {
             <View style={styles.paymentDescriptionContainer}>
                <Text style={styles.paymentDescription}>{description}</Text>
             </View>
+            {isNotesVisible && notes !== '' && (
+               <View>
+                  <Text style={styles.paymentDescription}>{notes}</Text>
+               </View>
+            )}
          </View>
          <View style={styles.paymentIconsContainer}>
-            <FontAwesome
-               name="trash-o"
-               size={24}
-               color={props.theme.colors.onSurface}
-               onPress={() => props.deletePayment(props.payment)}
-            />
+            <View>
+               <FontAwesome
+                  name="commenting-o"
+                  size={24}
+                  color={props.theme.colors.onSurface}
+                  onPress={() => setIsNotesVisible(!isNotesVisible)}
+               />
+            </View>
+            <View>
+               <FontAwesome
+                  name="trash-o"
+                  size={24}
+                  color={props.theme.colors.onSurface}
+                  onPress={() => props.deletePayment(props.payment)}
+               />
+            </View>
          </View>
       </View>
    );
