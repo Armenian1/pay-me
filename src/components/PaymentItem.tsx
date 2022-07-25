@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import moment from 'moment';
+import { Feather } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { StyleSheet, TouchableHighlight, View } from 'react-native';
 import { Text, withTheme } from 'react-native-paper';
@@ -22,7 +23,7 @@ const makeStyles = (theme: ReactNativePaper.Theme) =>
          backgroundColor: theme.colors.surface,
       },
       profileIconContainer: {
-         flex: 1,
+         flex: 2,
       },
       profileIcon: {
          width: 56,
@@ -35,7 +36,8 @@ const makeStyles = (theme: ReactNativePaper.Theme) =>
          alignItems: 'center',
       },
       paymentInformationContainer: {
-         flex: 3,
+         flex: 6,
+         paddingLeft: 10,
       },
       paymentTextContainer: {
          flexDirection: 'row',
@@ -57,11 +59,11 @@ const makeStyles = (theme: ReactNativePaper.Theme) =>
          fontSize: 18,
       },
       paymentIconsContainer: {
-         flex: 1,
+         flex: 3,
          flexDirection: 'row',
          justifyContent: 'space-around',
          alignItems: 'flex-end',
-         marginBottom: 5,
+         paddingBottom: 5,
       },
    });
 
@@ -105,6 +107,9 @@ function PaymentItem(props: PaymentItemProps): JSX.Element {
             )}
          </View>
          <View style={styles.paymentIconsContainer}>
+            <View>
+               <Feather name="edit-2" size={24} color={props.theme.colors.onSurface} />
+            </View>
             <View>
                <FontAwesome
                   name="commenting-o"
