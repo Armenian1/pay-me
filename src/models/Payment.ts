@@ -4,6 +4,6 @@ export default interface Payment {
    name: string;
    amount: number;
    description: string;
-   notes: string;
+   comments: string;
    date: string;
 }

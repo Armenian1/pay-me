@@ -6,11 +6,12 @@ import { Controller, useForm } from 'react-hook-form';
 import Modal from '../components/Modal';
 import Payment from '../models/Payment';
 
-type AddPaymentFormProps = {
+type EditPaymentFormProps = {
    theme: ReactNativePaper.Theme;
+   payment: Payment;
    isVisible: boolean;
    setIsVisible: (value: boolean) => void;
-   addPayment: (payment: Partial<Payment>) => Promise<void>;
+   updatePayment: (payment: Payment) => Promise<void>;
 };
 
 type FormData = {
@@ -35,11 +36,11 @@ const makeStyles = (theme: ReactNativePaper.Theme) =>
       inputField: {
          backgroundColor: '#FFFFFF',
       },
-      addPaymentButton: {
+      updatePaymentButton: {
          padding: 3,
          borderRadius: 5,
       },
-      addPaymentButtonText: {
+      updatePaymentButtonText: {
          fontSize: 18,
       },
       errorText: {
@@ -47,7 +48,7 @@ const makeStyles = (theme: ReactNativePaper.Theme) =>
       },
    });
 
-function AddPaymentForm(props: AddPaymentFormProps): JSX.Element {
+function EditPaymentForm(props: EditPaymentFormProps): JSX.Element {
    const styles = makeStyles(props.theme);
    const isModalVisible: boolean = props.isVisible;
 
@@ -58,24 +59,24 @@ function AddPaymentForm(props: AddPaymentFormProps): JSX.Element {
       formState: { errors, isValid },
    } = useForm<FormData>({
       defaultValues: {
-         name: '',
-         amount: '',
-         description: '',
-         comments: '',
+         name: props.payment.name,
+         amount: props.payment.amount.toString(),
+         description: props.payment.description,
+         comments: props.payment.comments,
       },
       mode: 'onChange',
    });
 
-   const addPayment = (data: FormData) => {
-      const newPayment: Partial<Payment> = {
+   const updatePayment = (data: FormData) => {
+      const updatedPayment: Payment = {
+         ...props.payment,
          name: data.name.trim(),
          amount: Number(data.amount),
          description: data.description.trim(),
          comments: data.comments.trim(),
-         date: new Date().toISOString(),
       };
 
-      props.addPayment(newPayment);
+      props.updatePayment(updatedPayment);
       props.setIsVisible(false);
 
       reset(undefined, { keepDefaultValues: true });
@@ -84,7 +85,7 @@ function AddPaymentForm(props: AddPaymentFormProps): JSX.Element {
    return (
       <Modal isVisible={isModalVisible} onBackdropPress={() => props.setIsVisible(false)}>
          <Modal.Container>
-            <Modal.Header title="Add a New Payment" />
+            <Modal.Header title="Edit Payment" />
             <Modal.Body>
                <View style={styles.inputFieldContainer}>
                   <Text>Name</Text>
@@ -176,15 +177,15 @@ function AddPaymentForm(props: AddPaymentFormProps): JSX.Element {
             <Modal.Footer>
                <Button
                   mode="contained"
-                  style={styles.addPaymentButton}
-                  labelStyle={styles.addPaymentButtonText}
+                  style={styles.updatePaymentButton}
+                  labelStyle={styles.updatePaymentButtonText}
                   color="green"
                   disabled={!isValid}
-                  onPress={handleSubmit(addPayment)}
+                  onPress={handleSubmit(updatePayment)}
                   uppercase={false}
-                  accessibilityLabel="Add a Payment"
+                  accessibilityLabel="Update Payment"
                >
-                  Add Payment
+                  Update Payment
                </Button>
             </Modal.Footer>
          </Modal.Container>
@@ -192,4 +193,4 @@ function AddPaymentForm(props: AddPaymentFormProps): JSX.Element {
    );
 }
 
-export default withTheme(AddPaymentForm);
+export default withTheme(EditPaymentForm);

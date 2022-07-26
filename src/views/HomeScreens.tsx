@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { addDoc, collection, deleteDoc, doc, getDocs, setDoc } from 'firebase/firestore';
 import { AntDesign } from '@expo/vector-icons';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { withTheme } from 'react-native-paper';
 
-import { addDoc, collection, deleteDoc, doc, getDocs } from 'firebase/firestore';
-import { db } from '../database/firebase';
-
 import AddPaymentForm from './AddPaymentForm';
 import PaymentItem from '../components/PaymentItem';
+import { db } from '../database/firebase';
 import type Payment from '../models/Payment';
 import type { DocumentData, DocumentReference, QuerySnapshot } from 'firebase/firestore';
 
@@ -24,8 +23,9 @@ const makeStyles = (colors: ReactNativePaper.ThemeColors) =>
          backgroundColor: colors.surface,
       },
       addButtonContainer: {
-         flex: 1,
-         alignItems: 'flex-end',
+         position: 'absolute',
+         bottom: 10,
+         right: 10,
       },
       addButton: {
          flex: 1,
@@ -67,15 +67,27 @@ function HomeScreen(props: HomeScreenProps): JSX.Element {
             name: payment.name,
             amount: payment.amount,
             description: payment.description,
-            notes: payment.notes,
+            comments: payment.comments,
             date: payment.date,
          });
          console.log('Document written with ID: ', docRef.id);
 
-         const newPayment: Payment = { ...payment, id: docRef.id } as Payment;
-         setPayments([...payments, newPayment]);
+         await getPayments();
       } catch (e) {
          console.error('Error adding document: ', e);
+      }
+   };
+
+   const updatePayment = async (payment: Payment) => {
+      const { id, ...paymentData } = payment;
+      try {
+         const docRef: DocumentReference<DocumentData> = doc(db, 'payments', id);
+         await setDoc(docRef, paymentData);
+         console.log(`Document with ID ${docRef.id} successfully updated`);
+
+         await getPayments();
+      } catch (e) {
+         console.error('Error updating document: ', e);
       }
    };
 
@@ -107,12 +119,20 @@ function HomeScreen(props: HomeScreenProps): JSX.Element {
 
    return (
       <View style={styles.container}>
-         <FlatList
-            data={payments}
-            renderItem={({ item }) => <PaymentItem payment={item} deletePayment={deletePayment} />}
-            keyExtractor={(item) => item.id}
-            ItemSeparatorComponent={renderSeparator}
-         />
+         <View>
+            <FlatList
+               data={payments}
+               renderItem={({ item }) => (
+                  <PaymentItem
+                     payment={item}
+                     updatePayment={updatePayment}
+                     deletePayment={deletePayment}
+                  />
+               )}
+               keyExtractor={(item) => item.id}
+               ItemSeparatorComponent={renderSeparator}
+            />
+         </View>
          <View style={styles.addButtonContainer}>
             <AntDesign
                name="pluscircle"
