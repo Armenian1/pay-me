@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { addDoc, collection, deleteDoc, doc, getDocs } from 'firebase/firestore';
 import { AntDesign } from '@expo/vector-icons';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { withTheme } from 'react-native-paper';
 
-import { addDoc, collection, deleteDoc, doc, getDocs } from 'firebase/firestore';
-import { db } from '../database/firebase';
-
 import AddPaymentForm from './AddPaymentForm';
 import PaymentItem from '../components/PaymentItem';
+import { db } from '../database/firebase';
 import type Payment from '../models/Payment';
 import type { DocumentData, DocumentReference, QuerySnapshot } from 'firebase/firestore';
 

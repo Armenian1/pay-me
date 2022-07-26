@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
 import moment from 'moment';
+import { doc, setDoc } from 'firebase/firestore';
 import { Feather } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { StyleSheet, TouchableHighlight, View } from 'react-native';
 import { Text, withTheme } from 'react-native-paper';
 
-import Payment from '../models/Payment';
+import EditPaymentForm from '../views/EditPaymentForm';
+import { db } from '../database/firebase';
+import type Payment from '../models/Payment';
+import type { DocumentData, DocumentReference } from 'firebase/firestore';
 
 type PaymentItemProps = {
    theme: ReactNativePaper.Theme;
@@ -65,12 +69,29 @@ const makeStyles = (theme: ReactNativePaper.Theme) =>
          alignItems: 'flex-end',
          paddingBottom: 5,
       },
+      editPaymentFormContainer: {
+         flex: 1,
+         alignItems: 'center',
+         justifyContent: 'center',
+      },
    });
+
+const updatePayment = async (payment: Payment) => {
+   const { id, ...paymentData } = payment;
+   try {
+      const docRef: DocumentReference<DocumentData> = doc(db, 'payments', id);
+      await setDoc(docRef, paymentData);
+      console.log(`Document with ID ${docRef.id} successfully updated`);
+   } catch (e) {
+      console.error('Error updating document: ', e);
+   }
+};
 
 function PaymentItem(props: PaymentItemProps): JSX.Element {
    const styles = makeStyles(props.theme);
    const { name, amount, description, comments, date } = props.payment;
 
+   const [isEditPaymentVisible, setIsEditPaymentVisible] = useState<boolean>(false);
    const [isCommentsVisible, setIsCommentsVisible] = useState<boolean>(false);
 
    return (
@@ -108,7 +129,12 @@ function PaymentItem(props: PaymentItemProps): JSX.Element {
          </View>
          <View style={styles.paymentIconsContainer}>
             <View>
-               <Feather name="edit-2" size={24} color={props.theme.colors.onSurface} />
+               <Feather
+                  name="edit-2"
+                  size={24}
+                  color={props.theme.colors.onSurface}
+                  onPress={() => setIsEditPaymentVisible(true)}
+               />
             </View>
             <View>
                <FontAwesome
@@ -126,6 +152,14 @@ function PaymentItem(props: PaymentItemProps): JSX.Element {
                   onPress={() => props.deletePayment(props.payment)}
                />
             </View>
+         </View>
+         <View style={styles.editPaymentFormContainer}>
+            <EditPaymentForm
+               payment={props.payment}
+               isVisible={isEditPaymentVisible}
+               setIsVisible={(value: boolean) => setIsEditPaymentVisible(value)}
+               updatePayment={updatePayment}
+            />
          </View>
       </View>
    );
