@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { addDoc, collection, deleteDoc, doc, getDocs } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, getDocs, setDoc } from 'firebase/firestore';
 import { AntDesign } from '@expo/vector-icons';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { withTheme } from 'react-native-paper';
@@ -72,10 +72,22 @@ function HomeScreen(props: HomeScreenProps): JSX.Element {
          });
          console.log('Document written with ID: ', docRef.id);
 
-         const newPayment: Payment = { ...payment, id: docRef.id } as Payment;
-         setPayments([...payments, newPayment]);
+         await getPayments();
       } catch (e) {
          console.error('Error adding document: ', e);
+      }
+   };
+
+   const updatePayment = async (payment: Payment) => {
+      const { id, ...paymentData } = payment;
+      try {
+         const docRef: DocumentReference<DocumentData> = doc(db, 'payments', id);
+         await setDoc(docRef, paymentData);
+         console.log(`Document with ID ${docRef.id} successfully updated`);
+
+         await getPayments();
+      } catch (e) {
+         console.error('Error updating document: ', e);
       }
    };
 
@@ -111,7 +123,11 @@ function HomeScreen(props: HomeScreenProps): JSX.Element {
             <FlatList
                data={payments}
                renderItem={({ item }) => (
-                  <PaymentItem payment={item} deletePayment={deletePayment} />
+                  <PaymentItem
+                     payment={item}
+                     updatePayment={updatePayment}
+                     deletePayment={deletePayment}
+                  />
                )}
                keyExtractor={(item) => item.id}
                ItemSeparatorComponent={renderSeparator}

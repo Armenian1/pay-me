@@ -14,7 +14,8 @@ import type { DocumentData, DocumentReference } from 'firebase/firestore';
 type PaymentItemProps = {
    theme: ReactNativePaper.Theme;
    payment: Payment;
-   deletePayment: (payment: Payment) => void;
+   updatePayment: (payment: Payment) => Promise<void>;
+   deletePayment: (payment: Payment) => Promise<void>;
 };
 
 const makeStyles = (theme: ReactNativePaper.Theme) =>
@@ -75,17 +76,6 @@ const makeStyles = (theme: ReactNativePaper.Theme) =>
          justifyContent: 'center',
       },
    });
-
-const updatePayment = async (payment: Payment) => {
-   const { id, ...paymentData } = payment;
-   try {
-      const docRef: DocumentReference<DocumentData> = doc(db, 'payments', id);
-      await setDoc(docRef, paymentData);
-      console.log(`Document with ID ${docRef.id} successfully updated`);
-   } catch (e) {
-      console.error('Error updating document: ', e);
-   }
-};
 
 function PaymentItem(props: PaymentItemProps): JSX.Element {
    const styles = makeStyles(props.theme);
@@ -158,7 +148,7 @@ function PaymentItem(props: PaymentItemProps): JSX.Element {
                payment={props.payment}
                isVisible={isEditPaymentVisible}
                setIsVisible={(value: boolean) => setIsEditPaymentVisible(value)}
-               updatePayment={updatePayment}
+               updatePayment={props.updatePayment}
             />
          </View>
       </View>
