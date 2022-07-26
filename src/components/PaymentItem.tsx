@@ -1,15 +1,12 @@
 import React, { useState } from 'react';
 import moment from 'moment';
-import { doc, setDoc } from 'firebase/firestore';
 import { Feather } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { StyleSheet, TouchableHighlight, View } from 'react-native';
 import { Text, withTheme } from 'react-native-paper';
 
 import EditPaymentForm from '../views/EditPaymentForm';
-import { db } from '../database/firebase';
 import type Payment from '../models/Payment';
-import type { DocumentData, DocumentReference } from 'firebase/firestore';
 
 type PaymentItemProps = {
    theme: ReactNativePaper.Theme;
