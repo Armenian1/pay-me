@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { addDoc, collection, deleteDoc, doc, getDocs, setDoc } from 'firebase/firestore';
 import { AntDesign } from '@expo/vector-icons';
-import { FlatList, RefreshControl, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, FlatList, RefreshControl, StyleSheet, View } from 'react-native';
 import { withTheme } from 'react-native-paper';
 
 import AddPaymentForm from './AddPaymentForm';
@@ -65,6 +65,7 @@ function HomeScreen(props: HomeScreenProps): JSX.Element {
    };
 
    const addPayment = async (payment: Partial<Payment>) => {
+      setIsRefreshing(true);
       try {
          const docRef: DocumentReference<DocumentData> = await addDoc(collection(db, 'payments'), {
             name: payment.name,
@@ -78,10 +79,13 @@ function HomeScreen(props: HomeScreenProps): JSX.Element {
          await getPayments();
       } catch (e) {
          console.error('Error adding document: ', e);
+      } finally {
+         setIsRefreshing(false);
       }
    };
 
    const updatePayment = async (payment: Payment) => {
+      setIsRefreshing(true);
       const { id, ...paymentData } = payment;
       try {
          const docRef: DocumentReference<DocumentData> = doc(db, 'payments', id);
@@ -91,20 +95,22 @@ function HomeScreen(props: HomeScreenProps): JSX.Element {
          await getPayments();
       } catch (e) {
          console.error('Error updating document: ', e);
+      } finally {
+         setIsRefreshing(false);
       }
    };
 
    const deletePayment = async (payment: Payment) => {
+      setIsRefreshing(true);
       try {
          await deleteDoc(doc(db, 'payments', payment.id));
          console.log(`Payment ${payment.name} has successfully been deleted`);
 
-         const paymentIndex: number = payments.map((x) => x.id).indexOf(payment.id);
-         if (paymentIndex > -1) {
-            setPayments([...payments.slice(0, paymentIndex), ...payments.slice(paymentIndex + 1)]);
-         }
+         await getPayments();
       } catch (e) {
          console.error('Error deleting document: ', e);
+      } finally {
+         setIsRefreshing(false);
       }
    };
 
@@ -120,7 +126,7 @@ function HomeScreen(props: HomeScreenProps): JSX.Element {
       );
    };
 
-   return (
+   return !isRefreshing ? (
       <View style={styles.container}>
          <View>
             <FlatList
@@ -152,6 +158,10 @@ function HomeScreen(props: HomeScreenProps): JSX.Element {
                addPayment={addPayment}
             />
          </View>
+      </View>
+   ) : (
+      <View style={styles.container}>
+         <ActivityIndicator size={'large'} />
       </View>
    );
 }
