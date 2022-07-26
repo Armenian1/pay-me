@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { addDoc, collection, deleteDoc, doc, getDocs, setDoc } from 'firebase/firestore';
 import { AntDesign } from '@expo/vector-icons';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, RefreshControl, StyleSheet, View } from 'react-native';
 import { withTheme } from 'react-native-paper';
 
 import AddPaymentForm from './AddPaymentForm';
@@ -42,8 +42,9 @@ function HomeScreen(props: HomeScreenProps): JSX.Element {
    const { colors } = props.theme;
    const styles = makeStyles(colors);
 
-   const [isAddPaymentVisible, setIsAddPaymentVisible] = useState<boolean>(false);
    const [payments, setPayments] = useState<Payment[]>([]);
+   const [isAddPaymentVisible, setIsAddPaymentVisible] = useState<boolean>(false);
+   const [isRefreshing, setIsRefreshing] = useState<boolean>(true);
 
    useEffect(() => {
       getPayments();
@@ -58,6 +59,8 @@ function HomeScreen(props: HomeScreenProps): JSX.Element {
          setPayments(querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id } as Payment)));
       } catch (e) {
          console.error('Error adding document: ', e);
+      } finally {
+         setIsRefreshing(false);
       }
    };
 
@@ -131,6 +134,7 @@ function HomeScreen(props: HomeScreenProps): JSX.Element {
                )}
                keyExtractor={(item) => item.id}
                ItemSeparatorComponent={renderSeparator}
+               refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={getPayments} />}
             />
          </View>
          <View style={styles.addButtonContainer}>
