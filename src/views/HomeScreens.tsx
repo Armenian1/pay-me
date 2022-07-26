@@ -56,7 +56,11 @@ function HomeScreen(props: HomeScreenProps): JSX.Element {
             collection(db, 'payments')
          );
 
-         setPayments(querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id } as Payment)));
+         const payments: Payment[] = querySnapshot.docs
+            .map((doc) => ({ ...doc.data(), id: doc.id } as Payment))
+            .sort((a, b) => (a.date < b.date ? 1 : -1));
+
+         setPayments(payments);
       } catch (e) {
          console.error('Error adding document: ', e);
       } finally {
