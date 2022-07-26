@@ -74,6 +74,13 @@ const makeStyles = (theme: ReactNativePaper.Theme) =>
       },
    });
 
+const getNameInitials = (name: string) => {
+   const initialsList: string[] = name.split(' ').map((x) => x[0]);
+   const initials: string = initialsList[0].concat(initialsList[1] || '');
+
+   return initials;
+};
+
 function PaymentItem(props: PaymentItemProps): JSX.Element {
    const styles = makeStyles(props.theme);
    const { name, amount, description, comments, date } = props.payment;
@@ -91,7 +98,7 @@ function PaymentItem(props: PaymentItemProps): JSX.Element {
                   console.log('Opening up contact page.');
                }}
             >
-               <Text>AA</Text>
+               <Text>{getNameInitials(props.payment.name)}</Text>
             </TouchableHighlight>
          </View>
          <View style={styles.paymentInformationContainer}>
