@@ -19,7 +19,8 @@ const makeStyles = (colors: ReactNativePaper.ThemeColors) =>
       container: {
          flex: 1,
          elevation: 2,
-         padding: 16,
+         paddingTop: 5,
+         paddingLeft: 5,
          backgroundColor: colors.surface,
       },
       addButtonContainer: {

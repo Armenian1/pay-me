@@ -37,18 +37,20 @@ const makeStyles = (theme: ReactNativePaper.Theme) =>
          justifyContent: 'center',
          alignItems: 'center',
       },
-      paymentInformationContainer: {
+      paymentBodyContainer: {
          flex: 6,
          paddingLeft: 10,
       },
-      paymentTextContainer: {
+      paymentInfoAndIconsContainer: {
          flexDirection: 'row',
+      },
+      paymentTitleAndDateContainer: {
+         flex: 5,
       },
       paymentText: {
          fontSize: 16,
       },
       paymentTextBold: {
-         fontSize: 16,
          fontWeight: theme.fonts.medium.fontWeight,
       },
       paymentDate: {
@@ -64,7 +66,7 @@ const makeStyles = (theme: ReactNativePaper.Theme) =>
          flex: 3,
          flexDirection: 'row',
          justifyContent: 'space-around',
-         alignItems: 'flex-end',
+         alignItems: 'flex-start',
          paddingBottom: 5,
       },
       editPaymentFormContainer: {
@@ -101,52 +103,61 @@ function PaymentItem(props: PaymentItemProps): JSX.Element {
                <Text>{getNameInitials(props.payment.name)}</Text>
             </TouchableHighlight>
          </View>
-         <View style={styles.paymentInformationContainer}>
-            <View style={styles.paymentTextContainer}>
-               <Text style={styles.paymentTextBold}>{name}</Text>
-               <Text style={styles.paymentText}> owes </Text>
-               <Text style={styles.paymentTextBold}>{`$${amount}`}</Text>
-            </View>
-            <View>
-               <Text style={styles.paymentDate}>{`${moment
-                  .duration(moment().diff(date))
-                  .humanize()} ago`}</Text>
-            </View>
-            <View style={styles.paymentDescriptionContainer}>
-               <Text style={styles.paymentDescription}>{description}</Text>
-            </View>
-            {isCommentsVisible && comments !== '' && (
-               <View>
-                  <Text style={styles.paymentDescription}>{comments}</Text>
+         <View style={styles.paymentBodyContainer}>
+            <View style={styles.paymentInfoAndIconsContainer}>
+               <View style={styles.paymentTitleAndDateContainer}>
+                  <View>
+                     <Text style={styles.paymentText}>
+                        <Text style={styles.paymentTextBold}>{name}</Text>
+                        <Text> owes </Text>
+                        <Text style={styles.paymentTextBold}>{`$${amount}`}</Text>
+                     </Text>
+                  </View>
+                  <View>
+                     <Text style={styles.paymentDate}>{`${moment
+                        .duration(moment().diff(date))
+                        .humanize()} ago`}</Text>
+                  </View>
                </View>
-            )}
+               <View style={styles.paymentIconsContainer}>
+                  <View>
+                     <Feather
+                        name="edit-2"
+                        size={24}
+                        color={props.theme.colors.onSurface}
+                        onPress={() => setIsEditPaymentVisible(true)}
+                     />
+                  </View>
+                  <View>
+                     <FontAwesome
+                        name="commenting-o"
+                        size={24}
+                        color={props.theme.colors.onSurface}
+                        onPress={() => setIsCommentsVisible(!isCommentsVisible)}
+                     />
+                  </View>
+                  <View>
+                     <FontAwesome
+                        name="trash-o"
+                        size={24}
+                        color={props.theme.colors.onSurface}
+                        onPress={() => props.deletePayment(props.payment)}
+                     />
+                  </View>
+               </View>
+            </View>
+            <View>
+               <View style={styles.paymentDescriptionContainer}>
+                  <Text style={styles.paymentDescription}>{description}</Text>
+               </View>
+               {isCommentsVisible && comments !== '' && (
+                  <View>
+                     <Text style={styles.paymentDescription}>{comments}</Text>
+                  </View>
+               )}
+            </View>
          </View>
-         <View style={styles.paymentIconsContainer}>
-            <View>
-               <Feather
-                  name="edit-2"
-                  size={24}
-                  color={props.theme.colors.onSurface}
-                  onPress={() => setIsEditPaymentVisible(true)}
-               />
-            </View>
-            <View>
-               <FontAwesome
-                  name="commenting-o"
-                  size={24}
-                  color={props.theme.colors.onSurface}
-                  onPress={() => setIsCommentsVisible(!isCommentsVisible)}
-               />
-            </View>
-            <View>
-               <FontAwesome
-                  name="trash-o"
-                  size={24}
-                  color={props.theme.colors.onSurface}
-                  onPress={() => props.deletePayment(props.payment)}
-               />
-            </View>
-         </View>
+
          <View style={styles.editPaymentFormContainer}>
             <EditPaymentForm
                payment={props.payment}
