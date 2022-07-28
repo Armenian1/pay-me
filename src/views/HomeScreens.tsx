@@ -33,9 +33,7 @@ const makeStyles = (colors: ReactNativePaper.ThemeColors) =>
          color: '#28bd37',
       },
       addPaymentFormContainer: {
-         flex: 1,
-         alignItems: 'center',
-         justifyContent: 'center',
+         position: 'absolute',
       },
    });
 

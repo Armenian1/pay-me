@@ -21,11 +21,18 @@ const makeStyles = (theme: ReactNativePaper.Theme) =>
          flex: 1,
          flexDirection: 'row',
          elevation: 2,
-         margin: 5,
+         paddingVertical: 5,
+         paddingHorizontal: 8,
          backgroundColor: theme.colors.surface,
       },
       profileIconContainer: {
          flex: 2,
+      },
+      paymentBodyContainer: {
+         flex: 8,
+      },
+      editPaymentFormContainer: {
+         position: 'absolute',
       },
       profileIcon: {
          width: 56,
@@ -37,15 +44,17 @@ const makeStyles = (theme: ReactNativePaper.Theme) =>
          justifyContent: 'center',
          alignItems: 'center',
       },
-      paymentBodyContainer: {
-         flex: 6,
-         paddingLeft: 10,
-      },
       paymentInfoAndIconsContainer: {
          flexDirection: 'row',
       },
       paymentTitleAndDateContainer: {
-         flex: 5,
+         flex: 2,
+      },
+      paymentIconsContainer: {
+         flex: 1,
+         flexDirection: 'row',
+         justifyContent: 'space-around',
+         alignItems: 'flex-start',
       },
       paymentText: {
          fontSize: 16,
@@ -61,18 +70,6 @@ const makeStyles = (theme: ReactNativePaper.Theme) =>
       },
       paymentDescription: {
          fontSize: 18,
-      },
-      paymentIconsContainer: {
-         flex: 3,
-         flexDirection: 'row',
-         justifyContent: 'space-around',
-         alignItems: 'flex-start',
-         paddingBottom: 5,
-      },
-      editPaymentFormContainer: {
-         flex: 1,
-         alignItems: 'center',
-         justifyContent: 'center',
       },
    });
 
