@@ -68,7 +68,6 @@ function HomeScreen(props: HomeScreenProps): JSX.Element {
    };
 
    const addPayment = async (payment: Partial<Payment>) => {
-      setIsRefreshing(true);
       try {
          const docRef: DocumentReference<DocumentData> = await addDoc(collection(db, 'payments'), {
             name: payment.name,
@@ -82,13 +81,10 @@ function HomeScreen(props: HomeScreenProps): JSX.Element {
          await getPayments();
       } catch (e) {
          console.error('Error adding document: ', e);
-      } finally {
-         setIsRefreshing(false);
       }
    };
 
    const updatePayment = async (payment: Payment) => {
-      setIsRefreshing(true);
       const { id, ...paymentData } = payment;
       try {
          const docRef: DocumentReference<DocumentData> = doc(db, 'payments', id);
@@ -98,13 +94,10 @@ function HomeScreen(props: HomeScreenProps): JSX.Element {
          await getPayments();
       } catch (e) {
          console.error('Error updating document: ', e);
-      } finally {
-         setIsRefreshing(false);
       }
    };
 
    const deletePayment = async (payment: Payment) => {
-      setIsRefreshing(true);
       try {
          await deleteDoc(doc(db, 'payments', payment.id));
          console.log(`Payment ${payment.name} has successfully been deleted`);
@@ -112,8 +105,6 @@ function HomeScreen(props: HomeScreenProps): JSX.Element {
          await getPayments();
       } catch (e) {
          console.error('Error deleting document: ', e);
-      } finally {
-         setIsRefreshing(false);
       }
    };
 
