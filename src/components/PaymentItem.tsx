@@ -75,9 +75,10 @@ const makeStyles = (theme: ReactNativePaper.Theme) =>
 
 const getNameInitials = (name: string) => {
    const initialsList: string[] = name.split(' ').map((x) => x[0]);
-   const initials: string = initialsList[0].concat(initialsList[1] || '');
+   const firstInitial: string = initialsList[0].toUpperCase();
+   const secondInitial: string = initialsList[1]?.toUpperCase() || '';
 
-   return initials;
+   return firstInitial.concat(secondInitial);
 };
 
 function PaymentItem(props: PaymentItemProps): JSX.Element {
